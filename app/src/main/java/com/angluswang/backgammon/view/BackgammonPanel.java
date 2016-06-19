@@ -5,10 +5,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.angluswang.backgammon.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jeson on 2016/6/18.
@@ -26,7 +31,11 @@ public class BackgammonPanel extends View {
     private Bitmap mWhitePiece;
     private Bitmap mBlackPiece;
 
-    private float ratioPieceOfLineHeight = 3 * 1.0f / 4;
+    private float ratioPieceOfLineHeight = 3 * 1.0f / 4;    // 棋子大小相对于格子大小的比例
+
+    private boolean mIsWhite = true;    // 表示白棋先手或当前轮到白棋了
+    private List<Point> mWhiteArray = new ArrayList<>();    // 白棋的点的集合
+    private List<Point> mBlackArray = new ArrayList<>();    // 黑棋的点的集合
 
     public BackgammonPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,6 +44,8 @@ public class BackgammonPanel extends View {
     }
 
     private void init() {
+
+        // 初始化画笔
         mPaint.setColor(0x88000000);
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
@@ -77,6 +88,36 @@ public class BackgammonPanel extends View {
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        int action = event.getAction();
+        if (action == MotionEvent.ACTION_UP) {
+
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+            Point p = getValidPoint(x, y);
+
+            //判断是否该位置已经下过棋子
+            if (mWhiteArray.contains(p) || mBlackArray.contains(p)) {
+                return false;
+            }
+
+            if (mIsWhite) {
+                mWhiteArray.add(p);
+            } else {
+                mBlackArray.add(p);
+            }
+            invalidate();
+            mIsWhite = !mIsWhite;
+        }
+        return true;
+    }
+
+    private Point getValidPoint(int x, int y) {
+        return new Point((int) (x / mLineHeight), (int) (y / mLineHeight));
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
@@ -85,6 +126,7 @@ public class BackgammonPanel extends View {
 
     /**
      * 绘制棋盘
+     *
      * @param canvas
      */
     private void drawBoard(Canvas canvas) {
