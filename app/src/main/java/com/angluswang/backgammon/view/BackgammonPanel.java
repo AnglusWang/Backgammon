@@ -1,6 +1,8 @@
 package com.angluswang.backgammon.view;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -15,17 +17,19 @@ public class BackgammonPanel extends View {
     private float mLineHeight;
     private int MAX_LINE = 10;
 
-    public BackgammonPanel(Context context) {
-        super(context);
-    }
+    private Paint mPaint = new Paint();
 
     public BackgammonPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         setBackgroundColor(0x44ff0000);
+        init();
     }
 
-    public BackgammonPanel(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    private void init() {
+        mPaint.setColor(0x88000000);
+        mPaint.setAntiAlias(true);
+        mPaint.setDither(true);
+        mPaint.setStyle(Paint.Style.STROKE);
     }
 
     @Override
@@ -41,10 +45,42 @@ public class BackgammonPanel extends View {
 
         if (widthMode == MeasureSpec.UNSPECIFIED) {
             width = heightSize;
-        }else if (heightMode == MeasureSpec.UNSPECIFIED) {
+        } else if (heightMode == MeasureSpec.UNSPECIFIED) {
             width = widthSize;
         }
 
         setMeasuredDimension(width, width);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        mPanelWidth = w;
+        mLineHeight = mPanelWidth * 1.0f / MAX_LINE;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        drawBoard(canvas);
+    }
+
+    /**
+     * 绘制棋盘
+     * @param canvas
+     */
+    private void drawBoard(Canvas canvas) {
+        int w = mPanelWidth;
+        float lineHeight = mLineHeight;
+
+        for (int i = 0; i < MAX_LINE; i++) {
+            int startX = (int) (lineHeight / 2);
+            int endX = (int) (w - lineHeight / 2);
+            int y = (int) ((0.5 + i) * lineHeight);
+            canvas.drawLine(startX, y, endX, y, mPaint);
+            canvas.drawLine(y, startX, y, endX, mPaint);
+        }
     }
 }
