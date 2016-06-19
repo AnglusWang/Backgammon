@@ -1,10 +1,14 @@
 package com.angluswang.backgammon.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.angluswang.backgammon.R;
 
 /**
  * Created by Jeson on 2016/6/18.
@@ -19,6 +23,11 @@ public class BackgammonPanel extends View {
 
     private Paint mPaint = new Paint();
 
+    private Bitmap mWhitePiece;
+    private Bitmap mBlackPiece;
+
+    private float ratioPieceOfLineHeight = 3 * 1.0f / 4;
+
     public BackgammonPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         setBackgroundColor(0x44ff0000);
@@ -30,6 +39,9 @@ public class BackgammonPanel extends View {
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
         mPaint.setStyle(Paint.Style.STROKE);
+
+        mWhitePiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_w2);
+        mBlackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_b1);
     }
 
     @Override
@@ -58,6 +70,10 @@ public class BackgammonPanel extends View {
 
         mPanelWidth = w;
         mLineHeight = mPanelWidth * 1.0f / MAX_LINE;
+
+        int pieceWidth = (int) (mLineHeight * ratioPieceOfLineHeight);
+        mWhitePiece = Bitmap.createScaledBitmap(mWhitePiece, pieceWidth, pieceWidth, false);
+        mBlackPiece = Bitmap.createScaledBitmap(mBlackPiece, pieceWidth, pieceWidth, false);
     }
 
     @Override
