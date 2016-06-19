@@ -11,8 +11,16 @@
 
     <com.angluswang.backgammon.view.BackgammonPanel
         android:id="@+id/backgammon_panel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/restart"
+        android:text="重新开始"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"/>
 
 </RelativeLayout>

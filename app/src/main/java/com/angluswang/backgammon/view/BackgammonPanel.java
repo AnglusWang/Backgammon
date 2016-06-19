@@ -46,7 +46,7 @@ public class BackgammonPanel extends View {
 
     public BackgammonPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setBackgroundColor(0x44ff0000);
+//        setBackgroundColor(0x44ff0000);
         init();
     }
 
@@ -339,6 +339,17 @@ public class BackgammonPanel extends View {
             canvas.drawLine(startX, y, endX, y, mPaint);
             canvas.drawLine(y, startX, y, endX, mPaint);
         }
+    }
+
+    /**
+     * 开始游戏或重新开一局
+     */
+    public void restart() {
+        mWhiteArray.clear();
+        mBlackArray.clear();
+        mIsGameOver = false;
+        mIsWhiteWinner = false;
+        invalidate();
     }
 
     //数据存储部分
