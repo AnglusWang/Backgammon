@@ -110,6 +110,7 @@ public class BackgammonPanel extends View {
             invalidate();
             mIsWhite = !mIsWhite;
         }
+
         return true;
     }
 
