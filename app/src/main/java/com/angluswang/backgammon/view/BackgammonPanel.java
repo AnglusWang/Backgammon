@@ -31,7 +31,7 @@ public class BackgammonPanel extends View {
     private Bitmap mWhitePiece;
     private Bitmap mBlackPiece;
 
-    private float ratioPieceOfLineHeight = 3 * 1.0f / 4;    // 棋子大小相对于格子大小的比例
+    private float mRatioPieceOfLineHeight = 3 * 1.0f / 4;    // 棋子大小相对于格子大小的比例
 
     private boolean mIsWhite = true;    // 表示白棋先手或当前轮到白棋了
     private List<Point> mWhiteArray = new ArrayList<>();    // 白棋的点的集合
@@ -82,7 +82,7 @@ public class BackgammonPanel extends View {
         mPanelWidth = w;
         mLineHeight = mPanelWidth * 1.0f / MAX_LINE;
 
-        int pieceWidth = (int) (mLineHeight * ratioPieceOfLineHeight);
+        int pieceWidth = (int) (mLineHeight * mRatioPieceOfLineHeight);
         mWhitePiece = Bitmap.createScaledBitmap(mWhitePiece, pieceWidth, pieceWidth, false);
         mBlackPiece = Bitmap.createScaledBitmap(mBlackPiece, pieceWidth, pieceWidth, false);
     }
@@ -122,7 +122,30 @@ public class BackgammonPanel extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        drawBoard(canvas);
+        drawBoard(canvas);  //绘制棋盘
+        drawPieces(canvas); //绘制棋子
+    }
+
+    /**
+     * 绘制棋子
+     *
+     * @param canvas
+     */
+    private void drawPieces(Canvas canvas) {
+
+        for (int i = 0, n = mWhiteArray.size(); i < n; i++) {
+            Point whitePoint = mWhiteArray.get(i);
+            canvas.drawBitmap(mWhitePiece,
+                    (whitePoint.x + (1 - mRatioPieceOfLineHeight) / 2) * mLineHeight,
+                    (whitePoint.y + (1 - mRatioPieceOfLineHeight) / 2) * mLineHeight, null);
+        }
+
+        for (int i = 0, n = mBlackArray.size(); i < n; i++) {
+            Point blackPoint = mBlackArray.get(i);
+            canvas.drawBitmap(mBlackPiece,
+                    (blackPoint.x + (1 - mRatioPieceOfLineHeight) / 2) * mLineHeight,
+                    (blackPoint.y + (1 - mRatioPieceOfLineHeight) / 2) * mLineHeight, null);
+        }
     }
 
     /**
