@@ -10,6 +10,7 @@
     tools:context="com.angluswang.backgammon.activity.MainActivity">
 
     <com.angluswang.backgammon.view.BackgammonPanel
+        android:id="@+id/backgammon_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"/>
