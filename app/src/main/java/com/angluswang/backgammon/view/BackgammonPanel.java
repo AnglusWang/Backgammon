@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.angluswang.backgammon.R;
 
@@ -36,6 +37,10 @@ public class BackgammonPanel extends View {
     private boolean mIsWhite = true;    // 表示白棋先手或当前轮到白棋了
     private List<Point> mWhiteArray = new ArrayList<>();    // 白棋的点的集合
     private List<Point> mBlackArray = new ArrayList<>();    // 黑棋的点的集合
+
+    private boolean mIsGameOver;    //判断游戏是否接受
+    private boolean mIsWhiteWinner;     //判断黑白棋哪一方赢了
+    private int MAX_COUNT_IN_LINE = 5;
 
     public BackgammonPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -89,6 +94,9 @@ public class BackgammonPanel extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (mIsGameOver) {
+            return false;
+        }
 
         int action = event.getAction();
         if (action == MotionEvent.ACTION_UP) {
@@ -124,6 +132,171 @@ public class BackgammonPanel extends View {
 
         drawBoard(canvas);  //绘制棋盘
         drawPieces(canvas); //绘制棋子
+        checkGameOver();
+    }
+
+    /**
+     * 检查游戏是否结束
+     */
+    private void checkGameOver() {
+        boolean whiteWin = checkFiveInLine(mWhiteArray);
+        boolean blackWin = checkFiveInLine(mBlackArray);
+
+        if (whiteWin || blackWin) {
+
+            mIsGameOver = true;
+            mIsWhiteWinner = whiteWin;
+
+            String text = mIsWhiteWinner ? "白棋胜利" : "黑棋胜利";
+
+            Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean checkFiveInLine(List<Point> points) {
+        for (Point p : points) {
+            int x = p.x;
+            int y = p.y;
+
+            Boolean win = CheckeHorizonal(x, y, points);
+            if (win) return true;
+            win = CheckeVertical(x, y, points);
+            if (win) return true;
+            win = CheckeLeftDiagonal(x, y, points);
+            if (win) return true;
+            win = CheckeRightDiagonal(x, y, points);
+            if (win) return true;
+
+        }
+        return false;
+    }
+
+    /**
+     * 判断棋子在横向上是否满5个棋子
+     *
+     * @param x
+     * @param y
+     * @param points
+     * @return
+     */
+    private Boolean CheckeHorizonal(int x, int y, List<Point> points) {
+        int count = 1;
+
+        //往左检查
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
+            if (points.contains(new Point(x - i, y))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) return true;
+        //往右检查
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
+            if (points.contains(new Point(x + i, y))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) return true;
+        return false;
+    }
+
+    /**
+     * 判断棋子在纵向上是否满5个棋子
+     *
+     * @param x
+     * @param y
+     * @param points
+     * @return
+     */
+    private Boolean CheckeVertical(int x, int y, List<Point> points) {
+        int count = 1;
+
+        //往上检查
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
+            if (points.contains(new Point(x, y - i))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) return true;
+        //往下检查
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
+            if (points.contains(new Point(x, y + i))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) return true;
+        return false;
+    }
+
+    /**
+     * 判断棋子在左斜向上是否满5个棋子
+     *
+     * @param x
+     * @param y
+     * @param points
+     * @return
+     */
+    private Boolean CheckeLeftDiagonal(int x, int y, List<Point> points) {
+        int count = 1;
+
+        //往左下检查
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
+            if (points.contains(new Point(x - i, y + i))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) return true;
+        //往右上检查
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
+            if (points.contains(new Point(x + i, y - i))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) return true;
+        return false;
+    }
+
+    /**
+     * 判断棋子在横向上是否满5个棋子
+     *
+     * @param x
+     * @param y
+     * @param points
+     * @return
+     */
+    private Boolean CheckeRightDiagonal(int x, int y, List<Point> points) {
+        int count = 1;
+
+        //往左上检查
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
+            if (points.contains(new Point(x - i, y - i))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) return true;
+        //往右下检查
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
+            if (points.contains(new Point(x + i, y + i))) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count == MAX_COUNT_IN_LINE) return true;
+        return false;
     }
 
     /**
